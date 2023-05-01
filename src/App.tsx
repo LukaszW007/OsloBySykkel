@@ -4,11 +4,13 @@ import {Xhr} from "./Utils/Xhr";
 import {StationsList} from "./Components/StationsList";
 import {Spinner} from "./Components/Spinner";
 
-export enum ValuesToDisplay {
+export enum ValuesToParse {
     station_id = 'station_id',
     name = 'name',
+    // address = 'address',
     capacity = 'capacity',
     num_bikes_available = 'num_bikes_available',
+
 }
 
 function App() {
@@ -39,7 +41,7 @@ function App() {
         <div className="flex flex-col items-center">
             <div className='header'>
                 <h1 className="flex text-center text-3xl font-bold text-custom-blue">
-                    Oslo By Sykkel
+                    Oslo BySykkel
                 </h1>
 
             </div>

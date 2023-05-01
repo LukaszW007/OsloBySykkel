@@ -1,22 +1,24 @@
 import React from 'react';
 import {StationsListItem} from "./StationsListItem";
-import {ValuesToDisplay} from "../App";
+import {ValuesToParse} from "../App";
 
 interface StationsListProps {
     info: any,
     status: any,
 }
-interface StationsListItem {
-    id: string,
+export interface StationsListItem {
+    station_id: string,
     name: string,
     capacity: number,
-    availableVehicles: number | null,
+    num_bikes_available: number | null,
 }
 
+//remember to update in the case of updating ValuesToDisplay
 export enum headers {
-    stationName = 'Stativnavn',
+    name = 'Stativnavn',
+    // address = "Adresse",
     capacity = 'Kapasitet',
-    availableVehicles = 'Tilgjengelige sykkler',
+    num_bikes_available = 'Tilgjengelige sykkler',
 }
 
 export function StationsList(props: StationsListProps) {
@@ -25,7 +27,7 @@ export function StationsList(props: StationsListProps) {
         if (props.info && props.status) {
             props.info.stations.map((singleStation: any)=> {
                 let parsedSingleStation: any ={};
-                for (let enumValue in ValuesToDisplay) {
+                for (let enumValue in ValuesToParse) {
                     for (const [key, value] of Object.entries(singleStation)) {
                         if (enumValue === key) {
                             parsedSingleStation[`${key}`] = value;
@@ -38,8 +40,8 @@ export function StationsList(props: StationsListProps) {
             //find station by id and add available racks
             const {stations} = props.status;
             for(let i= 0; i<list.length; i++) {
-                const stationStatus = stations[stations.findIndex((el: any) => el.station_id === list[i][ValuesToDisplay.station_id])];
-                for (let enumValue in ValuesToDisplay) {
+                const stationStatus = stations[stations.findIndex((el: any) => el.station_id === list[i][ValuesToParse.station_id])];
+                for (let enumValue in ValuesToParse) {
                     for (const [key, value] of Object.entries(stationStatus)) {
                         if (enumValue === key && !list[i].hasOwnProperty(enumValue)) {
                             const tempListItem = list[i];
@@ -54,8 +56,39 @@ export function StationsList(props: StationsListProps) {
     }
     const list = parsedStationsList();
     const stationsList = list.map(item => {
-        return <StationsListItem key={item[ValuesToDisplay.station_id]} stationInfo={item}/>
+        return <StationsListItem key={item[ValuesToParse.station_id]} stationInfo={item}/>
     })
+
+    const listOfTableHeaders = () => {
+        const listOfHeaders = [];
+        for (let enumKey of Object.keys(ValuesToParse))  {
+            if (enumKey !== ValuesToParse.station_id) {
+                const headerToDisplay = () => {
+                    let toDisplay;
+                    for (let headerName in headers) {
+                        if (headerName == enumKey) {
+                            toDisplay  = headers[headerName as keyof typeof headers]
+                        }
+                    }
+                    return toDisplay
+                }
+                const listItem = headerToDisplay();
+                listOfHeaders.push(listItem);
+            }
+
+        }
+        return listOfHeaders
+    }
+
+    const headersToDisplay = listOfTableHeaders().map((singleHeader,index) => {
+        return (
+            <th key={index} scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {singleHeader}
+            </th>
+        )
+    })
+
+
 
     return (
         <>
@@ -66,18 +99,7 @@ export function StationsList(props: StationsListProps) {
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                           <tr>
-                            <th scope="col"
-                                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              {headers.stationName}
-                            </th>
-                            <th scope="col"
-                                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              {headers.capacity}
-                            </th>
-                            <th scope="col"
-                                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              {headers.availableVehicles}
-                            </th>
+                            {headersToDisplay}
                           </tr>
                         </thead>
                           {stationsList}
