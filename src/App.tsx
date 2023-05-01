@@ -2,29 +2,38 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Xhr} from "./Utils/Xhr";
 import {StationsList} from "./Components/StationsList";
+import {Spinner} from "./Components/Spinner";
 
 
 function App() {
-    const [isFetchedData, setIsFetchedData] = useState(false);
-    const [fetchedData, setFetchedData] = useState(null);
+    const [isFetchedStationInfoData, setIsFetchedStationInfoData] = useState(false);
+    const [isFetchedStationStatusData, setIsFetchedStationStatusData] = useState(false);
+    const [fetchedStationInfoData, setFetchedStationInfoData] = useState(null);
+    const [fetchedStationStatusData, setFetchedStationStatusData] = useState(null);
 
     useEffect(()=> {
-        if (!isFetchedData) {
+        if (!isFetchedStationInfoData && !isFetchedStationStatusData) {
             Xhr.getJson('https://gbfs.urbansharing.com/oslobysykkel.no/station_information.json', null)
                 .then((data)=> {
-                    setFetchedData(data.data);
-                    setIsFetchedData(true);
+                    setFetchedStationInfoData(data.data.data);
+                    setIsFetchedStationInfoData(true);
+                })
+            Xhr.getJson('https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json', null)
+                .then((data)=> {
+                    setFetchedStationStatusData(data.data.data);
+                    setIsFetchedStationStatusData(true);
                 })
         }
     },[]);
 
-    const stationsList = isFetchedData ? <StationsList data={fetchedData}/> : <div>Loading...</div>
+    const stationsList = isFetchedStationInfoData && isFetchedStationStatusData ? <StationsList info={fetchedStationInfoData} status={fetchedStationStatusData}/> : <Spinner/>
+
     return (
-        <div className="App">
-            <h1 className="text-3xl font-bold underline text-red-600">
+        <div className="flex flex-col items-center">
+            <h1 className="flex text-center text-3xl font-bold underline text-red-600">
                 Oslo By Sykkel
             </h1>
-            <div>
+            <div className="flex justify-items-center">
                 {stationsList}
             </div>
 
