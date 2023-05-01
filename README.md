@@ -1,6 +1,9 @@
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Download repository in ZIP or clone repository with _**git clone https://github.com/LukaszW007/OsloBySykkel_website.git**_
+2. Install all dependencies with _**npm install**_
+3. To run the app in dev mode just type `npm start` in the console of your IDE.
 
 ## Available Scripts
 
