@@ -8,9 +8,9 @@ export enum ValuesToParse {
     station_id = 'station_id',
     name = 'name',
     // address = 'address',
-    capacity = 'capacity',
+    // capacity = 'capacity',
+    num_docks_available = 'num_docks_available',
     num_bikes_available = 'num_bikes_available',
-
 }
 
 function App() {
@@ -19,21 +19,33 @@ function App() {
     const [fetchedStationInfoData, setFetchedStationInfoData] = useState(null);
     const [fetchedStationStatusData, setFetchedStationStatusData] = useState(null);
 
+    const dataFetching = () => {
+        Xhr.getJson('https://gbfs.urbansharing.com/oslobysykkel.no/station_information.json', null)
+            .then((data) => {
+                setFetchedStationInfoData(data.data.data);
+                setIsFetchedStationInfoData(true);
+            })
+        Xhr.getJson('https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json', null)
+            .then((data) => {
+                setFetchedStationStatusData(data.data.data);
+                setIsFetchedStationStatusData(true);
+            })
+    }
+
     useEffect(() => {
+        let interval: any;
         if (!isFetchedStationInfoData && !isFetchedStationStatusData) {
-            Xhr.getJson('https://gbfs.urbansharing.com/oslobysykkel.no/station_information.json', null)
-                .then((data) => {
-                    setFetchedStationInfoData(data.data.data);
-                    setIsFetchedStationInfoData(true);
-                })
-            Xhr.getJson('https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json', null)
-                .then((data) => {
-                    setFetchedStationStatusData(data.data.data);
-                    setIsFetchedStationStatusData(true);
-                })
+            dataFetching(); // fetch on component mount
+            interval = setInterval(() => {
+                dataFetching()
+            },(5*60*1000)); // fetching data every 5min to update the table
+        }
+        return () => {
+            clearInterval(interval);
         }
     }, []);
 
+    //Elements to render
     const stationsList = isFetchedStationInfoData && isFetchedStationStatusData ?
         <StationsList info={fetchedStationInfoData} status={fetchedStationStatusData} /> : <Spinner />
 
@@ -43,13 +55,10 @@ function App() {
                 <h1 className="flex text-center text-3xl font-bold text-custom-blue">
                     Oslo BySykkel
                 </h1>
-
             </div>
-
-            <div className="flex justify-items-center">
+            <div className="flex flex-col justify-items-center">
                 {stationsList}
             </div>
-
         </div>
     );
 }
