@@ -1,3 +1,5 @@
+## This is a website displays information about city bikes in Oslo. It is responsive and user friendly.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
