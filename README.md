@@ -1,4 +1,5 @@
 ## This is a website displays information about city bikes in Oslo. It is responsive and user friendly.
+## It is available online https://lukaszw007.github.io/OsloBySykkel_website
 
 # Getting Started with Create React App
 
