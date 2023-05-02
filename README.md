@@ -7,6 +7,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 2. Install all dependencies with _**npm install**_
 3. To run the app in dev mode just type `npm start` in the console of your IDE.
 
+You should see the website like this:
+![obraz](https://user-images.githubusercontent.com/19213851/235719586-d2ea568b-0b07-4a6e-a07d-0008c1c442d3.png)
+
 ## Available Scripts
 
 In the project directory, you can run:
